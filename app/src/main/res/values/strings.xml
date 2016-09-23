@@ -1,5 +1,10 @@
 <resources>
     <string name="app_name">Netflix Roulette</string>
     <string name="search">Search</string>
-    <string name="search_view_hint">Search for an actor</string>
+    <string name="search_view_hint">Search for an director</string>
+
+    <string name="item_drawer_saved_movies">Saved movies</string>
+    <string name="item_drawer_search_with_title">Search with title</string>
+    <string name="item_drawer_search_with_director">Search with director</string>
+    <string name="item_drawer_search_features">Search features</string>
 </resources>

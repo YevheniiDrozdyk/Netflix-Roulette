@@ -1,4 +1,4 @@
-package com.indev.netflixroulette;
+package com.indev.netflixroulette.activity;
 
 import android.app.ProgressDialog;
 import android.support.design.widget.Snackbar;
@@ -10,6 +10,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import com.indev.netflixroulette.NetflixRouletteApi;
+import com.indev.netflixroulette.NetflixRouletteService;
+import com.indev.netflixroulette.Production;
+import com.indev.netflixroulette.adapter.ProductionAdapter;
+import com.indev.netflixroulette.R;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,13 +49,13 @@ public class MainActivity extends AppCompatActivity {
         netflixService = NetflixRouletteService.createNetflixRouletteService();
 
         //Auto-search after startup for testing
-        startSearch("Harrison Ford");
+        startSearch("Quentin Tarantino");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (subscriptions == null|| subscriptions.isUnsubscribed()) {
+        if (subscriptions == null || subscriptions.isUnsubscribed()) {
             subscriptions = new CompositeSubscription();
         }
     }
@@ -60,35 +66,35 @@ public class MainActivity extends AppCompatActivity {
         productionList.clear();
         subscriptions.add(
                 netflixService.listProductions(query)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<Production>>(){
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<List<Production>>() {
 
-                    @Override
-                    public void onCompleted() {
+                            @Override
+                            public void onCompleted() {
 
-                    }
+                            }
 
-                    @Override
-                    public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                    }
+                            }
 
-                    @Override
-                    public void onNext(List<Production> productions) {
-                        progressDialog.dismiss();
-                        for (Production p : productions) {
-                            productionList.add(p);
-                        }
-                        productionAdapter = new ProductionAdapter(productionList, getApplicationContext());
-                        recyclerView.setAdapter(productionAdapter);
+                            @Override
+                            public void onNext(List<Production> productions) {
+                                progressDialog.dismiss();
+                                for (Production p : productions) {
+                                    productionList.add(p);
+                                }
+                                productionAdapter = new ProductionAdapter(productionList, getApplicationContext());
+                                recyclerView.setAdapter(productionAdapter);
 
-                        //Alert user if no result are returned from the service
-                        if (productionList == null) {
-                            Snackbar.make(recyclerView, "No result found.", Snackbar.LENGTH_LONG).show();
-                        }
-                    }
-                }));
+                                //Alert user if no result are returned from the service
+                                if (productionList == null) {
+                                    Snackbar.make(recyclerView, "No result found.", Snackbar.LENGTH_LONG).show();
+                                }
+                            }
+                        }));
     }
 
     @Override

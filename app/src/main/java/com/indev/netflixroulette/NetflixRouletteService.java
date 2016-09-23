@@ -4,13 +4,10 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 
-/**
- * Created by Admin on 22.09.2016.
- */
-
 public class NetflixRouletteService {
 
-    private NetflixRouletteService(){}
+    private NetflixRouletteService() {
+    }
 
     public static NetflixRouletteApi createNetflixRouletteService() {
         Retrofit.Builder builder = new Retrofit.Builder()

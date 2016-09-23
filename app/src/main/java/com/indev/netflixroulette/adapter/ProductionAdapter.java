@@ -1,4 +1,4 @@
-package com.indev.netflixroulette;
+package com.indev.netflixroulette.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -13,23 +13,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.indev.netflixroulette.Production;
+import com.indev.netflixroulette.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-/**
- * Created by Admin on 22.09.2016.
- */
 
 public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Holder> {
 
-    private List<Production> productionList;
-    private Context context;
+    private List<Production> mProductionList;
+    private Context mContext;
 
     public ProductionAdapter(List<Production> productions, Context context) {
-        this.productionList = productions;
-        this.context = context;
+        this.mProductionList = productions;
+        this.mContext = context;
     }
 
     @Override
@@ -40,13 +39,13 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
 
     @Override
     public void onBindViewHolder(Holder holder, int position) {
-        Production production = productionList.get(position);
+        Production production = mProductionList.get(position);
         holder.bindProduction(production);
     }
 
     @Override
     public int getItemCount() {
-        return (productionList != null ? productionList.size() : 0);
+        return (mProductionList != null ? mProductionList.size() : 0);
     }
 
     public class Holder extends RecyclerView.ViewHolder {
@@ -66,7 +65,7 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
         private void bindProduction(Production production) {
             this.production = production;
 
-            Picasso.with(context).load(this.production.getPoster())
+            Picasso.with(mContext).load(this.production.getPoster())
                     .placeholder(R.mipmap.ic_launcher) //если не прогрузилось фото
                     .resize(240, 240)
                     .centerCrop()

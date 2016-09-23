@@ -5,10 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-/**
- * Created by Admin on 22.09.2016.
- */
-
 public class Production implements Serializable {
 
     @Expose
