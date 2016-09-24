@@ -9,7 +9,7 @@ import rx.Observable;
 public interface NetflixRouletteApi {
 
     /**
-     * See http://netflixroulette.net/api/api.php?actor=Harrison%20Ford
+     * See http://netflixroulette.net/api/api.php?director=Quentin%20Tarantino
      */
     @GET("/api/api.php?")
     Observable<List<Production>> listProductions(@Query("director") String actor);

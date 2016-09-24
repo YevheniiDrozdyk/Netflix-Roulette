@@ -1,19 +1,24 @@
 package com.indev.netflixroulette.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.TextView;
 
 import com.indev.netflixroulette.R;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 public class SavedMoviesActivity extends AppCompatActivity {
 
     private Toolbar mToolbar;
     private Drawer mDrawer;
+    private int mSavedMovies = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +36,23 @@ public class SavedMoviesActivity extends AppCompatActivity {
                 .withActionBarDrawerToggleAnimated(true)
                 .withHeader(R.layout.item_drawer_header)
                 .addDrawerItems(
-                        new PrimaryDrawerItem().withName(R.string.item_drawer_saved_movies).withBadge("0")
+                        new PrimaryDrawerItem().withName(R.string.item_drawer_saved_movies).withBadge(mSavedMovies + "")
                                 .withIdentifier(1).withIcon(R.drawable.ic_grade_black_18dp),
                         new SectionDrawerItem().withName(R.string.item_drawer_search_features),
-                        new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_title).withBadge("1")
+                        new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_title)
                                 .withIdentifier(2).withIcon(R.drawable.ic_description_black_18dp),
-                        new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_director).withBadge("2")
+                        new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_director)
                                 .withIdentifier(3).withIcon(R.drawable.ic_perm_identity_black_18dp))
+                .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    @Override
+                    public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                        if (drawerItem.getIdentifier() == 3) {
+                            Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
+                            startActivity(intent);
+                        }
+                        return false;
+                    }
+                })
                 .build();
     }
 

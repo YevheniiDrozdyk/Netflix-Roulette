@@ -25,7 +25,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class MainActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
 
     private NetflixRouletteApi netflixService;
     private CompositeSubscription subscriptions = new CompositeSubscription();
