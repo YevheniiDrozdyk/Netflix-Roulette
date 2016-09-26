@@ -20,7 +20,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-
 public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Holder> {
 
     private List<Production> mProductionList;
@@ -86,7 +85,7 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
 
                         @Override
                         public void onError() {
-
+                            itemBackground.setBackgroundColor(Color.RED);
                         }
                     });
 

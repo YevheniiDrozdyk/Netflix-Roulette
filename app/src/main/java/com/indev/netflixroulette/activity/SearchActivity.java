@@ -7,7 +7,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.util.Pair;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
@@ -24,9 +23,6 @@ import com.indev.netflixroulette.util.NetflixRouletteApi;
 import com.indev.netflixroulette.util.NetflixRouletteService;
 import com.indev.netflixroulette.util.Production;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.util.ArrayList;
@@ -37,22 +33,25 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends BaseActivity {
 
-    private Toolbar mToolbar;
     private NetflixRouletteApi mNetflixService;
     private CompositeSubscription mSubscriptions = new CompositeSubscription();
     private List<Production> mProductionList;
     private ProductionAdapter mProductionAdapter;
     private ProgressDialog mProgressDialog;
     private RecyclerView mRecyclerView;
+    private Drawer mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        mDrawer = super.onCreateDrawer(toolbar, Constants.ID_SEARCH_ACTIVITY);
+        setDrawerClickListener();
 
         mSubscriptions = new CompositeSubscription();
         mProductionList = new ArrayList<>();
@@ -83,6 +82,21 @@ public class SearchActivity extends AppCompatActivity {
         //Auto-search after startup for testing
         startSearch(Constants.PLACEHOLDER_DIRECTOR);
         getSupportActionBar().setTitle(Constants.PLACEHOLDER_DIRECTOR);
+    }
+
+    private void setDrawerClickListener() {
+        mDrawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            @Override
+            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                if (drawerItem.getIdentifier() == Constants.ID_SAVED_MOVIES_ACTIVITY) {
+                    Intent intent = new Intent(getApplicationContext(), SavedMoviesActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+
+                return false;
+            }
+        });
     }
 
     @Override
