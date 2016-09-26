@@ -13,7 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.indev.netflixroulette.Production;
+import com.indev.netflixroulette.util.Production;
 import com.indev.netflixroulette.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

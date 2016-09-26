@@ -7,4 +7,8 @@
     <string name="item_drawer_search_with_title">Search with title</string>
     <string name="item_drawer_search_with_director">Search with director</string>
     <string name="item_drawer_search_features">Search features</string>
+
+    <string name="transition_image">transition_image</string>
+    <string name="transition_title">transition_title</string>
+    <string name="production_poster">Production Poster</string>
 </resources>

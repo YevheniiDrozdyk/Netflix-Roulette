@@ -1,4 +1,4 @@
-package com.indev.netflixroulette;
+package com.indev.netflixroulette.util;
 
 import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;

@@ -1,4 +1,4 @@
-package com.indev.netflixroulette;
+package com.indev.netflixroulette.util;
 
 import java.util.List;
 
@@ -12,5 +12,5 @@ public interface NetflixRouletteApi {
      * See http://netflixroulette.net/api/api.php?director=Quentin%20Tarantino
      */
     @GET("/api/api.php?")
-    Observable<List<Production>> listProductions(@Query("director") String actor);
+    Observable<List<Production>> listProductions(@Query("director") String director);
 }

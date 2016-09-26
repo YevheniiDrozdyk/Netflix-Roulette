@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.TextView;
 
 import com.indev.netflixroulette.R;
 import com.mikepenz.materialdrawer.Drawer;
@@ -39,20 +38,19 @@ public class SavedMoviesActivity extends AppCompatActivity {
                         new PrimaryDrawerItem().withName(R.string.item_drawer_saved_movies).withBadge(mSavedMovies + "")
                                 .withIdentifier(1).withIcon(R.drawable.ic_grade_black_18dp),
                         new SectionDrawerItem().withName(R.string.item_drawer_search_features),
-                        new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_title)
-                                .withIdentifier(2).withIcon(R.drawable.ic_description_black_18dp),
                         new PrimaryDrawerItem().withName(R.string.item_drawer_search_with_director)
-                                .withIdentifier(3).withIcon(R.drawable.ic_perm_identity_black_18dp))
+                                .withIdentifier(2).withIcon(R.drawable.ic_perm_identity_black_18dp))
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if (drawerItem.getIdentifier() == 3) {
+                        if (drawerItem.getIdentifier() == 2) {
                             Intent intent = new Intent(getApplicationContext(), SearchActivity.class);
                             startActivity(intent);
                         }
                         return false;
                     }
                 })
+                .withSelectedItem(0)
                 .build();
     }
 
