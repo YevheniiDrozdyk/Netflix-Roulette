@@ -7,68 +7,31 @@ import java.io.Serializable;
 
 public class Production implements Serializable {
 
-    @Expose
-    private Integer unit;
-    @SerializedName("shod_id")
-    @Expose
-    private Integer showId;
     @SerializedName("show_title")
     @Expose
     private String showTitle;
+
     @SerializedName("release_year")
     @Expose
     private String releaseYear;
+
     @Expose
     private String rating;
-    @Expose
-    private String category;
-    @SerializedName("show_cast")
-    @Expose
-    private String showCast;
+
     @Expose
     private String director;
+
     @Expose
     private String summary;
+
     @Expose
     private String poster;
-    @Expose
-    private Integer mediatype;
-    @Expose
-    private String runtime;
-
-    /**
-     * @return The unit
-     */
-    public Integer getUnit() {
-        return unit;
-    }
-
-    /**
-     * @param unit The unit
-     */
-    public void setUnit(Integer unit) {
-        this.unit = unit;
-    }
-
-    /**
-     * @return The showId
-     */
-    public Integer getShowId() {
-        return showId;
-    }
-
-    /**
-     * @param showId The show_id
-     */
-    public void setShowId(Integer showId) {
-        this.showId = showId;
-    }
 
     /**
      * @return The showTitle
      */
     public String getShowTitle() {
-        return showTitle + " (" + releaseYear + ")";
+        return showTitle;
     }
 
     /**
@@ -104,34 +67,6 @@ public class Production implements Serializable {
      */
     public void setRating(String rating) {
         this.rating = rating;
-    }
-
-    /**
-     * @return The category
-     */
-    public String getCategory() {
-        return category;
-    }
-
-    /**
-     * @param category The category
-     */
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    /**
-     * @return The showCast
-     */
-    public String getShowCast() {
-        return showCast;
-    }
-
-    /**
-     * @param showCast The show_cast
-     */
-    public void setShowCast(String showCast) {
-        this.showCast = showCast;
     }
 
     /**
@@ -174,34 +109,6 @@ public class Production implements Serializable {
      */
     public void setPoster(String poster) {
         this.poster = poster;
-    }
-
-    /**
-     * @return The mediatype
-     */
-    public Integer getMediatype() {
-        return mediatype;
-    }
-
-    /**
-     * @param mediatype The mediatype
-     */
-    public void setMediatype(Integer mediatype) {
-        this.mediatype = mediatype;
-    }
-
-    /**
-     * @return The runtime
-     */
-    public String getRuntime() {
-        return runtime;
-    }
-
-    /**
-     * @param runtime The runtime
-     */
-    public void setRuntime(String runtime) {
-        this.runtime = runtime;
     }
 
 }

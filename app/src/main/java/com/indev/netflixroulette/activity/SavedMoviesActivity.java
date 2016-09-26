@@ -25,10 +25,10 @@ public class SavedMoviesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_saved_movies);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
-        setDrawer();
+        setNavigationDrawer();
     }
 
-    private void setDrawer() {
+    private void setNavigationDrawer() {
         mDrawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(mToolbar)
@@ -50,7 +50,7 @@ public class SavedMoviesActivity extends AppCompatActivity {
                         return false;
                     }
                 })
-                .withSelectedItem(0)
+                .withSelectedItem(1)
                 .build();
     }
 

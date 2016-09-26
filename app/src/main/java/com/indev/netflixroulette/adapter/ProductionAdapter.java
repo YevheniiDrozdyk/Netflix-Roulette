@@ -66,7 +66,7 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
             this.production = production;
 
             Picasso.with(mContext).load(this.production.getPoster())
-                    .placeholder(R.mipmap.ic_launcher) //если не прогрузилось фото
+                    .placeholder(R.drawable.ic_error_placeholder)
                     .resize(240, 240)
                     .centerCrop()
                     .into(posterImageView, new Callback() {
@@ -89,8 +89,8 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
 
                         }
                     });
-            titleTextView.setText(this.production.getShowTitle());
 
+            titleTextView.setText(this.production.getShowTitle());
         }
     }
 
