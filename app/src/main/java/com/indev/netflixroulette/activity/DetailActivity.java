@@ -15,7 +15,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.indev.netflixroulette.Constants;
+import com.indev.netflixroulette.util.Constants;
 import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.model.Production;
 import com.squareup.picasso.Picasso;

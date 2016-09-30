@@ -2,6 +2,7 @@ package com.indev.netflixroulette.activity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -15,7 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.indev.netflixroulette.Constants;
+import com.indev.netflixroulette.util.Constants;
 import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.adapter.ProductionAdapter;
 import com.indev.netflixroulette.adapter.RecyclerViewItemClickListener;
@@ -51,31 +52,41 @@ public class SearchActivity extends BaseActivity {
         setSupportActionBar(toolbar);
         setNavigationDrawer(toolbar);
 
-        mSubscriptions = new CompositeSubscription();
-        mProductionList = new ArrayList<>();
-        mProductionAdapter = new ProductionAdapter(mProductionList, this);
-        mRecyclerView = (RecyclerView) findViewById(R.id.production_recycler_view);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mRecyclerView.setAdapter(mProductionAdapter);
-        setRecyclerViewItemClickListener(mRecyclerView);
-
-        mNetflixService = NetflixRouletteService.createNetflixRouletteService();
+        defaultInitialisation();
 
         if (savedInstanceState == null || !savedInstanceState.containsKey(Constants.PRODUCTION_KEY)) {
             //Auto-search after startup
             startSearchProductions(Constants.PLACEHOLDER_DIRECTOR);
             getSupportActionBar().setTitle(Constants.PLACEHOLDER_DIRECTOR);
         } else {
-            mProductionList = (List<Production>) savedInstanceState.getSerializable(Constants.PRODUCTION_KEY);
+            mProductionList = (List<Production>)
+                    savedInstanceState.getSerializable(Constants.PRODUCTION_KEY);
             updateRecyclerViewAdapter();
             getSupportActionBar().setTitle(mProductionList.get(0).getDirector());
         }
     }
 
+    private void defaultInitialisation() {
+        mSubscriptions = new CompositeSubscription();
+        mProductionList = new ArrayList<>();
+        mProductionAdapter = new ProductionAdapter(mProductionList, this);
+        mRecyclerView = (RecyclerView) findViewById(R.id.production_recycler_view);
+        int countOfColumns;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            countOfColumns = 2;
+        } else {
+            countOfColumns = 3;
+        }
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, countOfColumns));
+        mRecyclerView.setAdapter(mProductionAdapter);
+        setRecyclerViewItemClickListener(mRecyclerView);
+        mNetflixService = NetflixRouletteService.createNetflixRouletteService();
+    }
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mProductionList != null ) {
+        if (mProductionList != null) {
             outState.putSerializable(Constants.PRODUCTION_KEY, (Serializable) mProductionList);
         }
     }
@@ -86,6 +97,30 @@ public class SearchActivity extends BaseActivity {
         if (mSubscriptions == null || mSubscriptions.isUnsubscribed()) {
             mSubscriptions = new CompositeSubscription();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu, menu);
+        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setQueryHint(getString(R.string.search_view_hint));
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if (query.trim().length() > 0) {
+                    startSearchProductions(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
+
+        return super.onCreateOptionsMenu(menu);
     }
 
     private void startSearchProductions(String director) {
@@ -119,7 +154,7 @@ public class SearchActivity extends BaseActivity {
                         }));
     }
 
-    private void updateRecyclerViewAdapter(){
+    private void updateRecyclerViewAdapter() {
         mProductionAdapter = new ProductionAdapter(mProductionList, getApplicationContext());
         mRecyclerView.setAdapter(mProductionAdapter);
     }
@@ -155,30 +190,6 @@ public class SearchActivity extends BaseActivity {
                 return false;
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu, menu);
-        final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setQueryHint(getString(R.string.search_view_hint));
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                if (query.trim().length() > 0) {
-                    startSearchProductions(query);
-                }
-                return false;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-
-        return super.onCreateOptionsMenu(menu);
     }
 
 }
