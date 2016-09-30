@@ -1,4 +1,6 @@
-package com.indev.netflixroulette.util;
+package com.indev.netflixroulette.network;
+
+import com.indev.netflixroulette.model.Production;
 
 import java.util.List;
 

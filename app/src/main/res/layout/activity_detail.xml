@@ -2,6 +2,7 @@
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/detail_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
@@ -68,6 +69,7 @@
         android:layout_margin="@dimen/activity_horizontal_margin"
         android:src="@drawable/ic_grade_white_24dp"
         app:layout_anchor="@id/detail_appbar"
-        app:layout_anchorGravity="bottom|right|end"/>
+        app:layout_anchorGravity="bottom|right|end"
+        android:onClick="onAddMovieClick"/>
 
 </android.support.design.widget.CoordinatorLayout>

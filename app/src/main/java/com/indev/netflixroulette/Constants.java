@@ -1,4 +1,5 @@
-package com.indev.netflixroulette.util;
+package com.indev.netflixroulette;
+
 
 public class Constants {
     public static final int ID_SAVED_MOVIES_ACTIVITY = 1;
@@ -9,4 +10,6 @@ public class Constants {
     public static final String TITLE_TRANSITION_NAME = "title_transition";
     public static final String DESCRIPTION_TRANSITION_NAME = "description_transition";
     public static final String PLACEHOLDER_DIRECTOR = "Quentin Tarantino";
+
+    public static final String PRODUCTION_KEY = "production";
 }

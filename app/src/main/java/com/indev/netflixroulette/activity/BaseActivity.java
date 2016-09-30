@@ -4,7 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.indev.netflixroulette.R;
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.Constants;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;

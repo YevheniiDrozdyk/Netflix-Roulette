@@ -1,4 +1,4 @@
-package com.indev.netflixroulette.util;
+package com.indev.netflixroulette.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

@@ -5,16 +5,19 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.Constants;
 import com.indev.netflixroulette.R;
-import com.indev.netflixroulette.util.Production;
+import com.indev.netflixroulette.model.Production;
 import com.squareup.picasso.Picasso;
 
 public class DetailActivity extends AppCompatActivity {
@@ -62,6 +65,10 @@ public class DetailActivity extends AppCompatActivity {
         descriptionTextView.setText(getDescription(production));
     }
 
+    private void loadPoster() {
+
+    }
+
     private Bitmap loadBitmap(ImageView imageView) {
         BitmapDrawable bitmapDrawable = (BitmapDrawable) imageView.getDrawable();
         return bitmapDrawable.getBitmap();
@@ -78,6 +85,11 @@ public class DetailActivity extends AppCompatActivity {
                 "\n\n Rating: " + production.getRating() +
                 "\n\n Director: " + production.getDirector() +
                 "\n\n Summary: " + production.getSummary();
+    }
+
+    public void onAddMovieClick(View view) {
+        NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.background_nested_scroll_view);
+        Snackbar.make(scrollView, "Movie was added!", Snackbar.LENGTH_SHORT).show();
     }
 
 }

@@ -10,10 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.indev.netflixroulette.util.Production;
+import com.indev.netflixroulette.model.Production;
 import com.indev.netflixroulette.R;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -51,14 +50,12 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
 
         private Production production;
         private ImageView posterImageView;
-        private TextView titleTextView;
-        private LinearLayout itemBackground;
+        private TextView descriptionTextView;
 
         public Holder(View itemView) {
             super(itemView);
             posterImageView = (ImageView) itemView.findViewById(R.id.list_item_poster_image_view);
-            titleTextView = (TextView) itemView.findViewById(R.id.list_item_title_text_view);
-            itemBackground = (LinearLayout) itemView.findViewById(R.id.list_item_info_layout);
+            descriptionTextView = (TextView) itemView.findViewById(R.id.list_item_description_text_view);
         }
 
         private void bindProduction(Production production) {
@@ -76,7 +73,7 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
                                     new Palette.PaletteAsyncListener() {
                                         @Override
                                         public void onGenerated(Palette palette) {
-                                            itemBackground.setBackgroundColor(palette.getDarkVibrantColor(Color.BLACK));
+                                            descriptionTextView.setBackgroundColor(palette.getDarkVibrantColor(Color.BLACK));
                                             posterImageView.setBackgroundColor(palette.getVibrantColor(Color.WHITE));
                                         }
                                     }
@@ -85,11 +82,11 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
 
                         @Override
                         public void onError() {
-                            itemBackground.setBackgroundColor(Color.RED);
+                            descriptionTextView.setBackgroundColor(Color.RED);
                         }
                     });
 
-            titleTextView.setText(this.production.getShowTitle());
+            descriptionTextView.setText(this.production.getShowTitle());
         }
     }
 

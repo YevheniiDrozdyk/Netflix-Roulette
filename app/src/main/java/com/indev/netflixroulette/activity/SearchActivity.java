@@ -15,16 +15,17 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.Constants;
 import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.adapter.ProductionAdapter;
 import com.indev.netflixroulette.adapter.RecyclerViewItemClickListener;
-import com.indev.netflixroulette.util.NetflixRouletteApi;
-import com.indev.netflixroulette.util.NetflixRouletteService;
-import com.indev.netflixroulette.util.Production;
+import com.indev.netflixroulette.network.NetflixRouletteApi;
+import com.indev.netflixroulette.network.NetflixRouletteService;
+import com.indev.netflixroulette.model.Production;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,12 +37,11 @@ import rx.subscriptions.CompositeSubscription;
 public class SearchActivity extends BaseActivity {
 
     private NetflixRouletteApi mNetflixService;
-    private CompositeSubscription mSubscriptions = new CompositeSubscription();
+    private CompositeSubscription mSubscriptions;
     private List<Production> mProductionList;
     private ProductionAdapter mProductionAdapter;
     private ProgressDialog mProgressDialog;
     private RecyclerView mRecyclerView;
-    private Drawer mDrawer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,9 +49,7 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.activity_search);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        mDrawer = super.onCreateDrawer(toolbar, Constants.ID_SEARCH_ACTIVITY);
-        setDrawerClickListener();
+        setNavigationDrawer(toolbar);
 
         mSubscriptions = new CompositeSubscription();
         mProductionList = new ArrayList<>();
@@ -59,33 +57,93 @@ public class SearchActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.production_recycler_view);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mRecyclerView.setAdapter(mProductionAdapter);
+        setRecyclerViewItemClickListener(mRecyclerView);
 
-        mRecyclerView.addOnItemTouchListener(
+        mNetflixService = NetflixRouletteService.createNetflixRouletteService();
+
+        if (savedInstanceState == null || !savedInstanceState.containsKey(Constants.PRODUCTION_KEY)) {
+            //Auto-search after startup
+            startSearchProductions(Constants.PLACEHOLDER_DIRECTOR);
+            getSupportActionBar().setTitle(Constants.PLACEHOLDER_DIRECTOR);
+        } else {
+            mProductionList = (List<Production>) savedInstanceState.getSerializable(Constants.PRODUCTION_KEY);
+            updateRecyclerViewAdapter();
+            getSupportActionBar().setTitle(mProductionList.get(0).getDirector());
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mProductionList != null ) {
+            outState.putSerializable(Constants.PRODUCTION_KEY, (Serializable) mProductionList);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (mSubscriptions == null || mSubscriptions.isUnsubscribed()) {
+            mSubscriptions = new CompositeSubscription();
+        }
+    }
+
+    private void startSearchProductions(String director) {
+        mProgressDialog = ProgressDialog.show(this, "Loading productions...", "Please wait...", true);
+        mProductionList.clear();
+        mSubscriptions.add(
+                mNetflixService.listProductions(director)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(new Observer<List<Production>>() {
+
+                            @Override
+                            public void onCompleted() {
+
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                mProgressDialog.dismiss();
+                                Snackbar.make(mRecyclerView, "No result found... Try again!", Snackbar.LENGTH_LONG).show();
+                            }
+
+                            @Override
+                            public void onNext(List<Production> productions) {
+                                mProgressDialog.dismiss();
+                                for (Production p : productions) {
+                                    mProductionList.add(p);
+                                }
+                                updateRecyclerViewAdapter();
+                            }
+                        }));
+    }
+
+    private void updateRecyclerViewAdapter(){
+        mProductionAdapter = new ProductionAdapter(mProductionList, getApplicationContext());
+        mRecyclerView.setAdapter(mProductionAdapter);
+    }
+
+    private void setRecyclerViewItemClickListener(RecyclerView recyclerView) {
+        recyclerView.addOnItemTouchListener(
                 new RecyclerViewItemClickListener(this, (view, position) -> {
                     Intent detailIntent = new Intent(SearchActivity.this, DetailActivity.class);
                     detailIntent.putExtra(Constants.EXTRA_PARAM, mProductionList.get(position));
 
                     Pair imagePair = new Pair<>(view.findViewById(R.id.list_item_poster_image_view), Constants.IMAGE_TRANSITION_NAME);
-                    Pair titlePair = new Pair<>(view.findViewById(R.id.list_item_title_text_view), Constants.TITLE_TRANSITION_NAME);
-                    Pair descriptionPair = new Pair<>(view.findViewById(R.id.list_item_info_layout), Constants.DESCRIPTION_TRANSITION_NAME);
-
+                    Pair description = new Pair<>(view.findViewById(R.id.list_item_description_text_view), Constants.TITLE_TRANSITION_NAME);
                     ActivityOptionsCompat transitionActivityOptions =
                             ActivityOptionsCompat.makeSceneTransitionAnimation(
-                                    SearchActivity.this, imagePair, titlePair, descriptionPair);
+                                    SearchActivity.this, imagePair, description);
 
                     ActivityCompat.startActivity(SearchActivity.this,
                             detailIntent, transitionActivityOptions.toBundle());
                 }));
-
-        mNetflixService = NetflixRouletteService.createNetflixRouletteService();
-
-        //Auto-search after startup for testing
-        startSearch(Constants.PLACEHOLDER_DIRECTOR);
-        getSupportActionBar().setTitle(Constants.PLACEHOLDER_DIRECTOR);
     }
 
-    private void setDrawerClickListener() {
-        mDrawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+    private void setNavigationDrawer(Toolbar toolbar) {
+        Drawer drawer = super.onCreateDrawer(toolbar, Constants.ID_SEARCH_ACTIVITY);
+        drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 if (drawerItem.getIdentifier() == Constants.ID_SAVED_MOVIES_ACTIVITY) {
@@ -100,50 +158,6 @@ public class SearchActivity extends BaseActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        if (mSubscriptions == null || mSubscriptions.isUnsubscribed()) {
-            mSubscriptions = new CompositeSubscription();
-        }
-    }
-
-    private void startSearch(String query) {
-        mProgressDialog = ProgressDialog.show(this, "Loading productions...", "Please wait...", true);
-        mProductionList.clear();
-        mSubscriptions.add(
-                mNetflixService.listProductions(query)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Observer<List<Production>>() {
-
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-
-                            }
-
-                            @Override
-                            public void onNext(List<Production> productions) {
-                                mProgressDialog.dismiss();
-                                for (Production p : productions) {
-                                    mProductionList.add(p);
-                                }
-                                mProductionAdapter = new ProductionAdapter(mProductionList, getApplicationContext());
-                                mRecyclerView.setAdapter(mProductionAdapter);
-
-                                //Alert user if no result are returned from the service
-                                if (mProductionList == null) {
-                                    Snackbar.make(mRecyclerView, "No result found.", Snackbar.LENGTH_LONG).show();
-                                }
-                            }
-                        }));
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu, menu);
         final MenuItem searchItem = menu.findItem(R.id.menu_item_search);
@@ -153,7 +167,7 @@ public class SearchActivity extends BaseActivity {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.trim().length() > 0) {
-                    startSearch(query);
+                    startSearchProductions(query);
                 }
                 return false;
             }
@@ -166,4 +180,5 @@ public class SearchActivity extends BaseActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
+
 }
