@@ -6,6 +6,12 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
+/**
+ * Item click listener of recycler view.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchListener {
 
     private OnItemClickListener mClickListener;
@@ -14,11 +20,11 @@ public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchLi
         void onItemClick(View view, int position);
     }
 
-    GestureDetector gestureDetector;
+    private GestureDetector mGestureDetector;
 
     public RecyclerViewItemClickListener(Context context, OnItemClickListener clickListener) {
         mClickListener = clickListener;
-        gestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
+        mGestureDetector = new GestureDetector(context, new GestureDetector.SimpleOnGestureListener() {
             @Override
             public boolean onSingleTapUp(MotionEvent e) {
                 return true;
@@ -29,7 +35,7 @@ public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchLi
     @Override
     public boolean onInterceptTouchEvent(RecyclerView view, MotionEvent e) {
         View childView = view.findChildViewUnder(e.getX(), e.getY());
-        if (childView != null && mClickListener != null && gestureDetector.onTouchEvent(e)) {
+        if (childView != null && mClickListener != null && mGestureDetector.onTouchEvent(e)) {
             mClickListener.onItemClick(childView, view.getChildAdapterPosition(childView));
         }
         return false;

@@ -4,6 +4,12 @@ import retrofit2.GsonConverterFactory;
 import retrofit2.Retrofit;
 import retrofit2.RxJavaCallAdapterFactory;
 
+/**
+ * Creates service with Netflix Roulette API.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class NetflixRouletteService {
 
     private NetflixRouletteService() {

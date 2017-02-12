@@ -14,9 +14,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.constant.Constants;
 import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.adapter.ProductionAdapter;
 import com.indev.netflixroulette.adapter.RecyclerViewItemClickListener;
@@ -24,7 +23,6 @@ import com.indev.netflixroulette.network.NetflixRouletteApi;
 import com.indev.netflixroulette.network.NetflixRouletteService;
 import com.indev.netflixroulette.model.Production;
 import com.mikepenz.materialdrawer.Drawer;
-import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -35,6 +33,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+/**
+ * UI class, that shows searched movies.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class SearchActivity extends BaseActivity {
 
     private NetflixRouletteApi mNetflixService;
@@ -61,7 +65,7 @@ public class SearchActivity extends BaseActivity {
         } else {
             mProductionList = (List<Production>)
                     savedInstanceState.getSerializable(Constants.PRODUCTION_KEY);
-            updateRecyclerViewAdapter();
+            setRecyclerViewAdapter();
             getSupportActionBar().setTitle(mProductionList.get(0).getDirector());
         }
     }
@@ -124,10 +128,10 @@ public class SearchActivity extends BaseActivity {
     }
 
     private void startSearchProductions(String director) {
-        mProgressDialog = ProgressDialog.show(this, "Loading productions...", "Please wait...", true);
+        mProgressDialog = ProgressDialog.show(this, "Loading queriedProductions...", "Please wait...", true);
         mProductionList.clear();
         mSubscriptions.add(
-                mNetflixService.listProductions(director)
+                mNetflixService.findProductions(director)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(new Observer<List<Production>>() {
@@ -146,15 +150,13 @@ public class SearchActivity extends BaseActivity {
                             @Override
                             public void onNext(List<Production> productions) {
                                 mProgressDialog.dismiss();
-                                for (Production p : productions) {
-                                    mProductionList.add(p);
-                                }
-                                updateRecyclerViewAdapter();
+                                mProductionList.addAll(productions);
+                                setRecyclerViewAdapter();
                             }
                         }));
     }
 
-    private void updateRecyclerViewAdapter() {
+    private void setRecyclerViewAdapter() {
         mProductionAdapter = new ProductionAdapter(mProductionList, getApplicationContext());
         mRecyclerView.setAdapter(mProductionAdapter);
     }
@@ -178,18 +180,15 @@ public class SearchActivity extends BaseActivity {
 
     private void setNavigationDrawer(Toolbar toolbar) {
         Drawer drawer = super.onCreateDrawer(toolbar, Constants.ID_SEARCH_ACTIVITY);
-        drawer.setOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
-            @Override
-            public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                if (drawerItem.getIdentifier() == Constants.ID_SAVED_MOVIES_ACTIVITY) {
-                    Intent intent = new Intent(getApplicationContext(), SavedMoviesActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+        drawer.setOnDrawerItemClickListener((view, position, drawerItem) -> {
+                    if (drawerItem.getIdentifier() == Constants.ID_SAVED_MOVIES_ACTIVITY) {
+                        Intent intent = new Intent(getApplicationContext(), SavedMoviesActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
+
+                    return false;
                 }
-
-                return false;
-            }
-        });
+        );
     }
-
 }

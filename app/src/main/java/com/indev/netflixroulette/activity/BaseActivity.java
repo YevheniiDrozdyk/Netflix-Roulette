@@ -4,12 +4,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.indev.netflixroulette.R;
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.constant.Constants;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 
+/**
+ * Base activity, that defines navigation drawer.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class BaseActivity extends AppCompatActivity {
 
     private Drawer mDrawer;

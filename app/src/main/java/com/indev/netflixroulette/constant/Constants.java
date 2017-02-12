@@ -1,6 +1,11 @@
-package com.indev.netflixroulette.util;
+package com.indev.netflixroulette.constant;
 
-
+/**
+ * Holds application constants.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class Constants {
     public static final int ID_SAVED_MOVIES_ACTIVITY = 1;
     public static final int ID_SEARCH_ACTIVITY = 2;

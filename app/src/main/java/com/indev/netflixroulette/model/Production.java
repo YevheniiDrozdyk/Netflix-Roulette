@@ -5,7 +5,20 @@ import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
-public class Production implements Serializable {
+import io.realm.RealmModel;
+import io.realm.annotations.PrimaryKey;
+import io.realm.annotations.RealmClass;
+
+/**
+ * Entity of production.
+ */
+@RealmClass
+public class Production implements Serializable, RealmModel {
+
+    @SerializedName("show_id")
+    @Expose
+    @PrimaryKey
+    private long id;
 
     @SerializedName("show_title")
     @Expose
@@ -27,88 +40,55 @@ public class Production implements Serializable {
     @Expose
     private String poster;
 
-    /**
-     * @return The showTitle
-     */
+    public Production() {
+
+    }
+
     public String getShowTitle() {
         return showTitle;
     }
 
-    /**
-     * @param showTitle The show_title
-     */
     public void setShowTitle(String showTitle) {
         this.showTitle = showTitle;
     }
 
-    /**
-     * @return The releaseYear
-     */
     public String getReleaseYear() {
         return releaseYear;
     }
 
-    /**
-     * @param releaseYear The release_year
-     */
     public void setReleaseYear(String releaseYear) {
         this.releaseYear = releaseYear;
     }
 
-    /**
-     * @return The rating
-     */
     public String getRating() {
         return rating + "/5";
     }
 
-    /**
-     * @param rating The rating
-     */
     public void setRating(String rating) {
         this.rating = rating;
     }
 
-    /**
-     * @return The director
-     */
     public String getDirector() {
         return director;
     }
 
-    /**
-     * @param director The director
-     */
     public void setDirector(String director) {
         this.director = director;
     }
 
-    /**
-     * @return The summary
-     */
     public String getSummary() {
         return summary;
     }
 
-    /**
-     * @param summary The summary
-     */
     public void setSummary(String summary) {
         this.summary = summary;
     }
 
-    /**
-     * @return The poster
-     */
     public String getPoster() {
         return poster;
     }
 
-    /**
-     * @param poster The poster
-     */
     public void setPoster(String poster) {
         this.poster = poster;
     }
-
 }

@@ -15,11 +15,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.indev.netflixroulette.util.Constants;
+import com.indev.netflixroulette.constant.Constants;
 import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.model.Production;
 import com.squareup.picasso.Picasso;
 
+/**
+ * UI class, that shows details of the movie.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class DetailActivity extends AppCompatActivity {
 
     @Override
@@ -45,14 +51,8 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                         Bitmap bitmap = loadBitmap(posterImageView);
-                        Palette.from(bitmap).generate(
-                                new Palette.PaletteAsyncListener() {
-                                    @Override
-                                    public void onGenerated(Palette palette) {
-                                        posterImageView.setBackgroundColor(palette.getVibrantColor(Color.WHITE));
-                                    }
-                                }
-                        );
+                        Palette.from(bitmap).generate(palette ->
+                                posterImageView.setBackgroundColor(palette.getVibrantColor(Color.WHITE)));
                     }
 
                     @Override
@@ -63,10 +63,6 @@ public class DetailActivity extends AppCompatActivity {
 
         getSupportActionBar().setTitle(getTitle(production));
         descriptionTextView.setText(getDescription(production));
-    }
-
-    private void loadPoster() {
-
     }
 
     private Bitmap loadBitmap(ImageView imageView) {
@@ -91,5 +87,4 @@ public class DetailActivity extends AppCompatActivity {
         NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.background_nested_scroll_view);
         Snackbar.make(scrollView, "Movie was added!", Snackbar.LENGTH_SHORT).show();
     }
-
 }

@@ -19,6 +19,12 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+/**
+ * Adapter of queriedProductions.
+ *
+ * @author E.Drozdyk
+ * @version 1.0 15 Oct 2016
+ */
 public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Holder> {
 
     private List<Production> mProductionList;
@@ -46,13 +52,13 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
         return (mProductionList != null ? mProductionList.size() : 0);
     }
 
-    public class Holder extends RecyclerView.ViewHolder {
+    class Holder extends RecyclerView.ViewHolder {
 
         private Production production;
         private ImageView posterImageView;
         private TextView descriptionTextView;
 
-        public Holder(View itemView) {
+        Holder(View itemView) {
             super(itemView);
             posterImageView = (ImageView) itemView.findViewById(R.id.list_item_poster_image_view);
             descriptionTextView = (TextView) itemView.findViewById(R.id.list_item_description_text_view);
@@ -69,13 +75,9 @@ public class ProductionAdapter extends RecyclerView.Adapter<ProductionAdapter.Ho
                         @Override
                         public void onSuccess() {
                             Bitmap bitmap = loadBitmap(posterImageView);
-                            Palette.from(bitmap).generate(
-                                    new Palette.PaletteAsyncListener() {
-                                        @Override
-                                        public void onGenerated(Palette palette) {
-                                            descriptionTextView.setBackgroundColor(palette.getDarkVibrantColor(Color.BLACK));
-                                            posterImageView.setBackgroundColor(palette.getVibrantColor(Color.WHITE));
-                                        }
+                            Palette.from(bitmap).generate(palette -> {
+                                        descriptionTextView.setBackgroundColor(palette.getDarkVibrantColor(Color.BLACK));
+                                        posterImageView.setBackgroundColor(palette.getVibrantColor(Color.WHITE));
                                     }
                             );
                         }
