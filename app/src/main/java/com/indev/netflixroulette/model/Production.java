@@ -6,7 +6,6 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 
 import io.realm.RealmModel;
-import io.realm.annotations.PrimaryKey;
 import io.realm.annotations.RealmClass;
 
 /**
@@ -14,11 +13,6 @@ import io.realm.annotations.RealmClass;
  */
 @RealmClass
 public class Production implements Serializable, RealmModel {
-
-    @SerializedName("show_id")
-    @Expose
-    @PrimaryKey
-    private long id;
 
     @SerializedName("show_title")
     @Expose

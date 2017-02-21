@@ -20,6 +20,8 @@ import com.indev.netflixroulette.R;
 import com.indev.netflixroulette.model.Production;
 import com.squareup.picasso.Picasso;
 
+import io.realm.Realm;
+
 /**
  * UI class, that shows details of the movie.
  *
@@ -28,6 +30,10 @@ import com.squareup.picasso.Picasso;
  */
 public class DetailActivity extends AppCompatActivity {
 
+    private Production mProduction;
+
+    private Realm mRealm;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +41,7 @@ public class DetailActivity extends AppCompatActivity {
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        Production production = (Production) getIntent().getSerializableExtra(Constants.EXTRA_PARAM);
+        mProduction = (Production) getIntent().getSerializableExtra(Constants.EXTRA_PARAM);
 
         ImageView posterImageView = (ImageView) findViewById(R.id.poster_image_view);
         TextView descriptionTextView = (TextView) findViewById(R.id.description_text_view);
@@ -43,7 +49,7 @@ public class DetailActivity extends AppCompatActivity {
         ViewCompat.setTransitionName(posterImageView, Constants.IMAGE_TRANSITION_NAME);
         ViewCompat.setTransitionName(descriptionTextView, Constants.DESCRIPTION_TRANSITION_NAME);
 
-        Picasso.with(this).load(production.getPoster())
+        Picasso.with(this).load(mProduction.getPoster())
                 .placeholder(R.drawable.ic_error_placeholder)
                 .resize(240, 240)
                 .centerCrop()
@@ -61,8 +67,11 @@ public class DetailActivity extends AppCompatActivity {
                     }
                 });
 
-        getSupportActionBar().setTitle(getTitle(production));
-        descriptionTextView.setText(getDescription(production));
+        getSupportActionBar().setTitle(getTitle(mProduction));
+        descriptionTextView.setText(getDescription(mProduction));
+
+        Realm.init(this);
+        mRealm = Realm.getDefaultInstance();
     }
 
     private Bitmap loadBitmap(ImageView imageView) {
@@ -86,5 +95,8 @@ public class DetailActivity extends AppCompatActivity {
     public void onAddMovieClick(View view) {
         NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.background_nested_scroll_view);
         Snackbar.make(scrollView, "Movie was added!", Snackbar.LENGTH_SHORT).show();
+        mRealm.beginTransaction();
+        mRealm.copyToRealm(mProduction);
+        mRealm.commitTransaction();
     }
 }

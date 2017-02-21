@@ -43,8 +43,8 @@ public class SearchActivity extends BaseActivity {
 
     private NetflixRouletteApi mNetflixService;
     private CompositeSubscription mSubscriptions;
-    private List<Production> mProductionList;
-    private ProductionAdapter mProductionAdapter;
+    private List<Production> mProductions;
+    private ProductionAdapter mAdapter;
     private ProgressDialog mProgressDialog;
     private RecyclerView mRecyclerView;
 
@@ -63,17 +63,17 @@ public class SearchActivity extends BaseActivity {
             startSearchProductions(Constants.PLACEHOLDER_DIRECTOR);
             getSupportActionBar().setTitle(Constants.PLACEHOLDER_DIRECTOR);
         } else {
-            mProductionList = (List<Production>)
+            mProductions = (List<Production>)
                     savedInstanceState.getSerializable(Constants.PRODUCTION_KEY);
             setRecyclerViewAdapter();
-            getSupportActionBar().setTitle(mProductionList.get(0).getDirector());
+            getSupportActionBar().setTitle(mProductions.get(0).getDirector());
         }
     }
 
     private void defaultInitialisation() {
         mSubscriptions = new CompositeSubscription();
-        mProductionList = new ArrayList<>();
-        mProductionAdapter = new ProductionAdapter(mProductionList, this);
+        mProductions = new ArrayList<>();
+        mAdapter = new ProductionAdapter(mProductions, this);
         mRecyclerView = (RecyclerView) findViewById(R.id.production_recycler_view);
         int countOfColumns;
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
@@ -82,7 +82,7 @@ public class SearchActivity extends BaseActivity {
             countOfColumns = 3;
         }
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, countOfColumns));
-        mRecyclerView.setAdapter(mProductionAdapter);
+        mRecyclerView.setAdapter(mAdapter);
         setRecyclerViewItemClickListener(mRecyclerView);
         mNetflixService = NetflixRouletteService.createNetflixRouletteService();
     }
@@ -90,8 +90,8 @@ public class SearchActivity extends BaseActivity {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mProductionList != null) {
-            outState.putSerializable(Constants.PRODUCTION_KEY, (Serializable) mProductionList);
+        if (mProductions != null) {
+            outState.putSerializable(Constants.PRODUCTION_KEY, (Serializable) mProductions);
         }
     }
 
@@ -129,7 +129,7 @@ public class SearchActivity extends BaseActivity {
 
     private void startSearchProductions(String director) {
         mProgressDialog = ProgressDialog.show(this, "Loading queriedProductions...", "Please wait...", true);
-        mProductionList.clear();
+        mProductions.clear();
         mSubscriptions.add(
                 mNetflixService.findProductions(director)
                         .subscribeOn(Schedulers.io())
@@ -150,22 +150,22 @@ public class SearchActivity extends BaseActivity {
                             @Override
                             public void onNext(List<Production> productions) {
                                 mProgressDialog.dismiss();
-                                mProductionList.addAll(productions);
+                                mProductions.addAll(productions);
                                 setRecyclerViewAdapter();
                             }
                         }));
     }
 
     private void setRecyclerViewAdapter() {
-        mProductionAdapter = new ProductionAdapter(mProductionList, getApplicationContext());
-        mRecyclerView.setAdapter(mProductionAdapter);
+        mAdapter = new ProductionAdapter(mProductions, getApplicationContext());
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     private void setRecyclerViewItemClickListener(RecyclerView recyclerView) {
         recyclerView.addOnItemTouchListener(
                 new RecyclerViewItemClickListener(this, (view, position) -> {
                     Intent detailIntent = new Intent(SearchActivity.this, DetailActivity.class);
-                    detailIntent.putExtra(Constants.EXTRA_PARAM, mProductionList.get(position));
+                    detailIntent.putExtra(Constants.EXTRA_PARAM, mProductions.get(position));
 
                     Pair imagePair = new Pair<>(view.findViewById(R.id.list_item_poster_image_view), Constants.IMAGE_TRANSITION_NAME);
                     Pair description = new Pair<>(view.findViewById(R.id.list_item_description_text_view), Constants.TITLE_TRANSITION_NAME);
